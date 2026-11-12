@@ -1,0 +1,18 @@
+{
+  "name": "DailyFuel — Nutrition & Fitness",
+  "short_name": "DailyFuel",
+  "description": "Free nutrition and workout tracker with optional AI food scanning",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f8f4",
+  "theme_color": "#116b4a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

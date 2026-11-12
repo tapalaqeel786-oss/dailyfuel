@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#116b4a" />
+    <meta
+      name="description"
+      content="DailyFuel — Nutrition & Fitness tracker with meal logging and workout planning."
+    />
+    <title>DailyFuel</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">DailyFuel</p>
+          <h1>Nutrition & Fitness</h1>
+        </div>
+        <button id="resetData" class="ghost-button" type="button">Reset day</button>
+      </header>
+
+      <main class="dashboard">
+        <section class="hero card">
+          <div>
+            <p class="section-label">Today</p>
+            <h2>Progress snapshot</h2>
+          </div>
+          <div class="summary" id="summaryChip">Goal ahead</div>
+        </section>
+
+        <section class="stats-grid" aria-label="Daily nutrition summary">
+          <article class="stat card">
+            <span class="stat-label">Calories</span>
+            <strong id="calorieTotal">0</strong>
+            <small id="calorieGoalLabel">/ 2200 kcal</small>
+          </article>
+          <article class="stat card">
+            <span class="stat-label">Protein</span>
+            <strong id="proteinTotal">0</strong>
+            <small>/ 150 g</small>
+          </article>
+          <article class="stat card">
+            <span class="stat-label">Hydration</span>
+            <strong id="waterTotal">0</strong>
+            <small>glasses</small>
+          </article>
+          <article class="stat card">
+            <span class="stat-label">Workouts</span>
+            <strong id="workoutCount">0</strong>
+            <small>/ 2 done</small>
+          </article>
+        </section>
+
+        <section class="panel-grid">
+          <article class="card panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Meals</p>
+                <h3>Add food</h3>
+              </div>
+            </div>
+
+            <form id="mealForm">
+              <label>
+                Food
+                <input id="mealName" name="mealName" type="text" placeholder="Greek yogurt bowl" required />
+              </label>
+              <div class="inline-fields">
+                <label>
+                  Calories
+                  <input id="mealCalories" name="mealCalories" type="number" min="0" step="10" value="420" required />
+                </label>
+                <label>
+                  Protein (g)
+                  <input id="mealProtein" name="mealProtein" type="number" min="0" step="1" value="28" required />
+                </label>
+              </div>
+              <button type="submit">Add meal</button>
+            </form>
+
+            <ul id="mealList" class="item-list" aria-live="polite"></ul>
+          </article>
+
+          <article class="card panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">AI scan</p>
+                <h3>Food recognition</h3>
+              </div>
+            </div>
+
+            <label class="upload-box" for="foodImage">
+              <input id="foodImage" type="file" accept="image/*" />
+              <span>Upload a meal photo</span>
+            </label>
+            <button id="scanMeal" class="secondary" type="button">Scan meal</button>
+            <div id="scanResult" class="scan-result">No image uploaded yet.</div>
+            <div id="scanPreview" class="scan-preview" aria-live="polite"></div>
+          </article>
+        </section>
+
+        <section class="panel-grid lower-grid">
+          <article class="card panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Workout</p>
+                <h3>Training plan</h3>
+              </div>
+            </div>
+            <ul id="workoutList" class="item-list workout-list" aria-live="polite"></ul>
+          </article>
+
+          <article class="card panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Hydration</p>
+                <h3>Water intake</h3>
+              </div>
+            </div>
+            <div class="water-box">
+              <button id="waterAdd" class="secondary" type="button">+ 1 glass</button>
+              <p id="waterStatus">Goal: 8 glasses</p>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

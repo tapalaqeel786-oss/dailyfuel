@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="DailyFuel app icon">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d9f8df"/>
+      <stop offset="100%" stop-color="#116b4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="#f4f8f4"/>
+  <circle cx="256" cy="180" r="120" fill="url(#g)"/>
+  <path d="M256 95c-72 0-130 60-130 132 0 92 98 170 130 210 32-40 130-118 130-210 0-72-58-132-130-132zm0 52c44 0 78 34 78 78 0 21-8 40-21 54l-57 58-57-58a76 76 0 0 1-21-54c0-44 34-78 78-78z" fill="#fff" opacity="0.9"/>
+  <path d="M188 314c20 32 57 54 68 59 11-5 48-27 68-59l-68-64-68 64z" fill="#ffffff" opacity="0.9"/>
+</svg>
