@@ -1,388 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#116b4a" />
-    <meta
-      name="description"
-      content="DailyFuel — Nutrition & Fitness tracker with meal logging, workout planning, weight tracking, AI nutrition insights, and PWA support."
-    />
-    <title>DailyFuel</title>
-    <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">DailyFuel</p>
-          <h1>Nutrition & Fitness</h1>
-        </div>
-        <nav class="nav" aria-label="Primary navigation">
-          <button class="active" data-page="dashboard" type="button">Dashboard</button>
-          <button data-page="meals" type="button">Meals</button>
-          <button data-page="workouts" type="button">Workouts</button>
-          <button data-page="goals" type="button">Goals</button>
-          <button data-page="settings" type="button">Settings</button>
-        </nav>
-      </header>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FreeCal – Free Diet Planner</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f8f7;--card:#fff;--text:#12211f;--muted:#5d726e;--line:#d8e5e2;--a:#0f9488;--at:#fff;--p:#e1783c;--c:#4a7fc1;--f:#8a6fc4;--warn:#c2410c;--track:#e2edea;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0e1716;--card:#16221f;--text:#e8f2f0;--muted:#97aea9;--line:#294039;--a:#35d0c0;--at:#04201c;--p:#f59a62;--c:#7fb0ee;--f:#b8a0ef;--warn:#fb923c;--track:#22332f}}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:76px}
+.wrap{max-width:720px;margin:0 auto;padding:14px}
+h1{font-size:1.4rem;margin:0}h2{font-size:1.1rem;margin:0 0 10px}h3{font-size:.95rem;margin:14px 0 6px}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 14px;min-height:44px}
+button.pr{background:var(--a);color:var(--at);border-color:var(--a);font-weight:600}
+button.sm{min-height:36px;padding:4px 10px}
+button.dn{color:var(--warn)}
+input,select{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;min-height:44px;width:100%}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.muted{color:var(--muted);font-size:.88rem}
+.form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.form .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--muted)}
+.ring{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ring svg{width:130px;height:130px;flex:none}
+.bars{flex:1;min-width:180px;display:grid;gap:8px}
+.bar{height:8px;background:var(--track);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.empty{color:var(--muted);text-align:center;padding:10px;font-size:.9rem}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));gap:6px;z-index:5}
+.tabs button{flex:1;border:0;background:none;min-height:48px;color:var(--muted)}
+.tabs button[aria-selected=true]{color:var(--a);font-weight:700;background:var(--bg)}
+.pick{max-height:200px;overflow:auto;border:1px solid var(--line);border-radius:10px;margin-top:6px}
+.pick button{display:flex;width:100%;justify-content:space-between;border:0;border-bottom:1px solid var(--line);border-radius:0;text-align:left;background:none}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.stats b{font-size:1.3rem;display:block}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><h1>🥗 FreeCal</h1><input type="date" id="date" style="width:auto" aria-label="Date"></header>
 
-      <main>
-        <section id="dashboard" class="page active">
-          <div class="hero card">
-            <div>
-              <p class="section-label">Daily overview</p>
-              <h2>Progress snapshot</h2>
-            </div>
-            <label class="date-picker">
-              <span>Date</span>
-              <input id="date" type="date" />
-            </label>
-          </div>
+<section id="v-today">
+  <div class="card"><div class="ring"><svg viewBox="0 0 120 120" role="img" aria-label="Calories remaining"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--track)" stroke-width="12"/><circle id="arc" cx="60" cy="60" r="50" fill="none" stroke="var(--a)" stroke-width="12" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)"/><text id="rem" x="60" y="58" text-anchor="middle" font-size="22" font-weight="700" fill="var(--text)">0</text><text id="remL" x="60" y="76" text-anchor="middle" font-size="10" fill="var(--muted)">kcal left</text></svg><div class="bars" id="macros"></div></div></div>
+  <div id="meals"></div>
+  <div class="card" id="addCard" hidden>
+    <h2 id="addT">Add food</h2>
+    <label>Search foods<input id="q" placeholder="Search or type a new food" autocomplete="off"></label>
+    <div class="pick" id="pick"></div>
+    <form id="ff" class="form" style="margin-top:10px">
+      <label class="full">Food name<input name="name" required maxlength="60"></label>
+      <label>Servings<input name="qty" type="number" min="0.1" step="any" value="1"></label>
+      <label>Calories / serving<input name="cal" type="number" min="0" step="any" required></label>
+      <label>Protein (g)<input name="p" type="number" min="0" step="any" value="0"></label>
+      <label>Carbs (g)<input name="c" type="number" min="0" step="any" value="0"></label>
+      <label>Fat (g)<input name="f" type="number" min="0" step="any" value="0"></label>
+      <div class="full" style="display:flex;gap:8px"><button class="pr" id="fsave">Add to log</button><button type="button" id="fcancel">Cancel</button></div>
+    </form>
+  </div>
+  <div class="card"><h2>💧 Water</h2><div class="row"><b id="wtxt"></b><span><button class="sm" id="w1">+250 ml</button> <button class="sm dn" id="w0">Undo</button></span></div></div>
+</section>
 
-          <section id="stats" class="stats-grid" aria-live="polite"></section>
+<section id="v-plan" hidden>
+  <div class="card"><h2>Your calorie plan</h2>
+    <form id="pf" class="form">
+      <label>Sex<select name="sex"><option value="m">Male</option><option value="f">Female</option></select></label>
+      <label>Age<input name="age" type="number" min="14" max="100" required></label>
+      <label>Height (cm)<input name="h" type="number" min="100" max="250" required></label>
+      <label>Weight (kg)<input name="w" type="number" min="30" max="300" step="0.1" required></label>
+      <label>Activity<select name="act"><option value="1.2">Sedentary</option><option value="1.375">Light (1–3 days/wk)</option><option value="1.55">Moderate (3–5 days/wk)</option><option value="1.725">Very active (6–7 days/wk)</option></select></label>
+      <label>Goal<select name="goal"><option value="-500">Lose weight (about 0.5 kg/week)</option><option value="0">Maintain weight</option><option value="300">Gain weight (about 0.25 kg/week)</option></select></label>
+      <div class="full"><button class="pr">Calculate and save plan</button></div>
+    </form>
+    <p class="muted">Uses the Mifflin–St Jeor formula. These are general estimates, not medical advice. Check with a doctor or dietitian for health conditions.</p>
+  </div>
+  <div class="card" id="planOut"></div>
+  <div class="card"><h2>Custom daily targets</h2><form id="tf" class="form"><label>Calories<input name="cal" type="number" min="800" step="1"></label><label>Protein (g)<input name="p" type="number" min="0"></label><label>Carbs (g)<input name="c" type="number" min="0"></label><label>Fat (g)<input name="f" type="number" min="0"></label><div class="full"><button class="pr">Save targets</button></div></form></div>
+</section>
 
-          <section class="panel-grid">
-            <article class="card panel small-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="section-label">Recent meals</p>
-                  <h3>Food log</h3>
-                </div>
-              </div>
-              <div id="recentMeals" class="list-stack"></div>
-            </article>
+<section id="v-prog" hidden>
+  <div class="card"><h2>Weight</h2><form id="wf" class="form"><label>Weight today (kg)<input name="w" type="number" min="30" max="300" step="0.1" required></label><div style="align-self:end"><button class="pr">Save</button></div></form><div id="chart"></div></div>
+  <div class="card"><h2>Last 7 days</h2><div id="week"></div></div>
+</section>
+</div>
+<nav class="tabs" role="tablist" aria-label="Sections">
+<button role="tab" data-v="today" aria-selected="true">Today</button><button role="tab" data-v="plan" aria-selected="false">Plan</button><button role="tab" data-v="prog" aria-selected="false">Progress</button>
+</nav>
 
-            <article class="card panel small-panel">
-              <div class="panel-header">
-                <div>
-                  <p class="section-label">Hydration</p>
-                  <h3>Water intake</h3>
-                </div>
-              </div>
-              <div class="water-summary">
-                <strong id="waterCount">0</strong>
-                <span>ml</span>
-              </div>
-              <div class="meter water-meter"><span id="waterBar" style="width: 0%"></span></div>
-              <div class="water-actions">
-                <button id="addWater" class="secondary" type="button">+ 250 ml</button>
-                <button id="undoWater" class="secondary" type="button">− 250 ml</button>
-              </div>
-              <label class="goal-input">
-                <span>Water goal (ml)</span>
-                <input id="waterGoal" type="number" min="250" step="250" value="2000" />
-              </label>
-            </article>
-          </section>
-        </section>
+<script>
+(function(){
+var K='freecal-v1',TYPES=['Breakfast','Lunch','Dinner','Snacks'];
+/* approximate generic values; edit or add your own foods */
+var DB=[['Egg, boiled (1 large)',78,6,.6,5],['Banana (1 medium)',105,1.3,27,.4],['Apple (1 medium)',95,.5,25,.3],['Cooked white rice (1 cup)',205,4.3,45,.4],['Chicken breast, cooked (100 g)',165,31,0,3.6],['Rolled oats, dry (40 g)',150,5,27,2.5],['Milk, 2% (1 cup)',122,8,12,4.8],['Bread slice',80,3,14,1],['Peanut butter (1 tbsp)',94,4,3,8],['Greek yogurt (170 g)',100,17,6,.7],['Dal, cooked (1 cup)',230,18,40,.8],['Roti (1 medium)',100,3,18,2],['Almonds (28 g)',164,6,6,14],['Paneer (100 g)',265,18,1.2,21],['Idli (1 piece)',40,2,8,.2],['Olive oil (1 tbsp)',119,0,0,14]];
+var S={t:{cal:2000,p:100,c:250,f:65},log:{},water:{},wt:[],foods:[],prof:null};
+try{var r=JSON.parse(localStorage.getItem(K));if(r&&r.t)S=Object.assign(S,r)}catch(e){}
+function save(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function nm(v){v=parseFloat(v);return isFinite(v)&&v>=0?v:0}
+function R(v){return Math.round(v)}
+function today(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+var D=$('date');D.value=today();var typ='Breakfast',edit=null;
 
-        <section id="meals" class="page">
-          <div class="page-header">
-            <div>
-              <p class="section-label">Meals</p>
-              <h2>Daily nutrition diary</h2>
-            </div>
-            <button id="newMeal" type="button">Add meal</button>
-          </div>
+/* tabs */
+document.querySelector('.tabs').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+  ['today','plan','prog'].forEach(function(v){$('v-'+v).hidden=v!==b.dataset.v});
+  document.querySelectorAll('.tabs button').forEach(function(x){x.setAttribute('aria-selected',x===b)});
+  if(b.dataset.v==='prog')renderProg()};
 
-          <div id="mealEditor" class="card editor hidden" hidden>
-            <div class="editor-header">
-              <h3 id="mealEditorTitle">Add meal</h3>
-              <button id="cancelMeal" class="secondary" type="button">Close</button>
-            </div>
-            <form id="mealForm" class="editor-form">
-              <input id="mealId" type="hidden" />
-              <div class="field-grid">
-                <label>
-                  Food name
-                  <input id="foodName" type="text" placeholder="Greek yogurt bowl" required />
-                </label>
-                <label>
-                  Meal type
-                  <select id="mealType">
-                    <option>Breakfast</option>
-                    <option>Lunch</option>
-                    <option>Dinner</option>
-                    <option>Snack</option>
-                  </select>
-                </label>
-              </div>
-              <div class="field-grid">
-                <label>
-                  Serving (g)
-                  <input id="serving" type="number" min="0" step="1" value="100" />
-                </label>
-                <label>
-                  Calories
-                  <input id="calories" type="number" min="0" step="1" value="0" required />
-                </label>
-              </div>
-              <div class="field-grid">
-                <label>
-                  Protein (g)
-                  <input id="protein" type="number" min="0" step="1" value="0" required />
-                </label>
-                <label>
-                  Carbs (g)
-                  <input id="carbs" type="number" min="0" step="1" value="0" required />
-                </label>
-              </div>
-              <div class="field-grid">
-                <label>
-                  Fat (g)
-                  <input id="fat" type="number" min="0" step="1" value="0" required />
-                </label>
-                <label>
-                  Fiber (g)
-                  <input id="fiber" type="number" min="0" step="1" value="0" required />
-                </label>
-              </div>
-              <div class="editor-actions">
-                <button type="submit">Save meal</button>
-              </div>
-            </form>
-          </div>
+/* today */
+function items(d){return S.log[d||D.value]||[]}
+function renderToday(){
+  var it=items(),t={cal:0,p:0,c:0,f:0};
+  it.forEach(function(x){var q=x.qty;t.cal+=x.cal*q;t.p+=x.p*q;t.c+=x.c*q;t.f+=x.f*q});
+  var left=S.t.cal-t.cal;$('rem').textContent=R(left);$('remL').textContent=left<0?'kcal over':'kcal left';
+  $('arc').setAttribute('stroke-dashoffset',314*(1-Math.min(1,S.t.cal?t.cal/S.t.cal:0)));
+  $('arc').setAttribute('stroke',left<0?'var(--warn)':'var(--a)');
+  $('macros').innerHTML=[['Calories','cal','kcal','--a'],['Protein','p','g','--p'],['Carbs','c','g','--c'],['Fat','f','g','--f']].map(function(m){
+    var g=S.t[m[1]],v=t[m[1]];return '<div><div style="display:flex;justify-content:space-between;font-size:.85rem"><span>'+m[0]+'</span><span>'+R(v)+' / '+R(g)+' '+m[2]+'</span></div><div class="bar"><i style="width:'+Math.min(100,g?v/g*100:0)+'%;background:var('+m[3]+')"></i></div></div>'}).join('');
+  $('meals').innerHTML=TYPES.map(function(ty){
+    var l=it.filter(function(x){return x.type===ty}),k=0;l.forEach(function(x){k+=x.cal*x.qty});
+    return '<div class="card"><div class="row" style="border:0;padding:0 0 4px"><h2 style="margin:0">'+ty+' <span class="muted">'+R(k)+' kcal</span></h2><button class="sm pr" data-add="'+ty+'">+ Add</button></div>'+
+    (l.length?l.map(function(x){return '<div class="row"><div>'+esc(x.name)+'<div class="muted">'+x.qty+' × · '+R(x.cal*x.qty)+' kcal · P '+R(x.p*x.qty)+' C '+R(x.c*x.qty)+' F '+R(x.f*x.qty)+'</div></div><span><button class="sm" data-e="'+x.id+'" aria-label="Edit '+esc(x.name)+'">Edit</button> <button class="sm dn" data-d="'+x.id+'" aria-label="Delete '+esc(x.name)+'">✕</button></span></div>'}).join(''):'<div class="empty">Nothing logged yet.</div>')+'</div>'}).join('');
+  var w=S.water[D.value]||0;$('wtxt').textContent=w+' ml';
+}
+D.onchange=function(){if(!D.value)D.value=today();closeAdd();renderToday()};
+$('meals').onclick=function(e){var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.add){openAdd(b.dataset.add)}
+  else if(b.dataset.d){S.log[D.value]=items().filter(function(x){return x.id!==b.dataset.d});save();closeAdd();renderToday()}
+  else if(b.dataset.e){var x=items().find(function(y){return y.id===b.dataset.e});if(!x)return;openAdd(x.type);edit=x.id;var f=$('ff');
+    f.name.value=x.name;f.qty.value=x.qty;f.cal.value=x.cal;f.p.value=x.p;f.c.value=x.c;f.f.value=x.f;$('fsave').textContent='Save changes';$('addT').textContent='Edit food'}};
+function openAdd(ty){typ=ty;edit=null;$('ff').reset();$('ff').qty.value=1;$('q').value='';$('addT').textContent='Add to '+ty;$('fsave').textContent='Add to log';$('addCard').hidden=false;renderPick();$('addCard').scrollIntoView({behavior:'smooth'});$('q').focus()}
+function closeAdd(){$('addCard').hidden=true;edit=null}
+$('fcancel').onclick=closeAdd;
+function allFoods(){return S.foods.concat(DB)}
+function renderPick(){var q=$('q').value.toLowerCase().trim(),l=allFoods().filter(function(x){return !q||x[0].toLowerCase().indexOf(q)>-1}).slice(0,30);
+  $('pick').innerHTML=l.length?l.map(function(x,i){return '<button type="button" data-n="'+esc(x[0])+'"><span>'+esc(x[0])+'</span><span class="muted">'+x[1]+' kcal</span></button>'}).join(''):'<div class="empty">No match. Fill in the fields below to add it as a new food.</div>'}
+$('q').oninput=renderPick;
+$('pick').onclick=function(e){var b=e.target.closest('button');if(!b)return;var x=allFoods().find(function(y){return y[0]===b.dataset.n}),f=$('ff');
+  if(x){f.name.value=x[0];f.cal.value=x[1];f.p.value=x[2];f.c.value=x[3];f.f.value=x[4];f.qty.focus()}};
+$('ff').onsubmit=function(e){e.preventDefault();var f=e.target;
+  var d={name:f.name.value.trim(),type:typ,qty:nm(f.qty.value)||1,cal:nm(f.cal.value),p:nm(f.p.value),c:nm(f.c.value),f:nm(f.f.value)};
+  if(!d.name)return;var l=S.log[D.value]=items();
+  if(edit){var x=l.find(function(y){return y.id===edit});if(x)Object.assign(x,d)}
+  else{d.id=Date.now().toString(36)+Math.random().toString(36).slice(2,5);l.push(d);
+    if(!allFoods().some(function(y){return y[0]===d.name}))S.foods.unshift([d.name,d.cal,d.p,d.c,d.f])}
+  save();closeAdd();renderToday()};
+$('w1').onclick=function(){S.water[D.value]=(S.water[D.value]||0)+250;save();renderToday()};
+$('w0').onclick=function(){S.water[D.value]=Math.max(0,(S.water[D.value]||0)-250);save();renderToday()};
 
-          <div id="mealList" class="list-stack"></div>
-        </section>
+/* plan */
+function planOut(){var p=S.prof;$('planOut').innerHTML=p?'<h2>Your estimate</h2><div class="stats"><div><b>'+R(p.bmr)+'</b><span class="muted">BMR (kcal/day at rest)</span></div><div><b>'+R(p.tdee)+'</b><span class="muted">Maintenance (kcal/day)</span></div><div><b>'+R(S.t.cal)+'</b><span class="muted">Daily target (kcal)</span></div></div><p class="muted">Targets: protein '+S.t.p+' g · carbs '+S.t.c+' g · fat '+S.t.f+' g. These were applied to your Today page.</p>':'<div class="empty">Fill in the form above to get a personal calorie target.</div>'}
+$('pf').onsubmit=function(e){e.preventDefault();var f=e.target,w=nm(f.w.value),h=nm(f.h.value),a=nm(f.age.value);
+  var bmr=10*w+6.25*h-5*a+(f.sex.value==='m'?5:-161),tdee=bmr*parseFloat(f.act.value),cal=Math.max(1200,tdee+parseFloat(f.goal.value));
+  S.prof={sex:f.sex.value,age:a,h:h,w:w,act:f.act.value,goal:f.goal.value,bmr:bmr,tdee:tdee};
+  S.t={cal:R(cal),p:R(cal*.25/4),c:R(cal*.5/4),f:R(cal*.25/9)};save();fillT();planOut();renderToday()};
+function fillT(){var f=$('tf');f.cal.value=S.t.cal;f.p.value=S.t.p;f.c.value=S.t.c;f.f.value=S.t.f}
+$('tf').onsubmit=function(e){e.preventDefault();var f=e.target;S.t={cal:nm(f.cal.value),p:nm(f.p.value),c:nm(f.c.value),f:nm(f.f.value)};save();planOut();renderToday()};
+if(S.prof){var pf=$('pf'),p=S.prof;pf.sex.value=p.sex;pf.age.value=p.age;pf.h.value=p.h;pf.w.value=p.w;pf.act.value=p.act;pf.goal.value=p.goal}
 
-        <section id="workouts" class="page">
-          <div class="page-header">
-            <div>
-              <p class="section-label">Workouts</p>
-              <h2>Training plan</h2>
-            </div>
-            <select id="workoutDay" aria-label="Workout day"></select>
-          </div>
+/* progress */
+$('wf').onsubmit=function(e){e.preventDefault();var v=nm(e.target.w.value);if(!v)return;
+  S.wt=S.wt.filter(function(x){return x.d!==D.value});S.wt.push({d:D.value,w:v});S.wt.sort(function(a,b){return a.d<b.d?-1:1});save();e.target.reset();renderProg()};
+function renderProg(){var l=S.wt.slice(-30);
+  if(l.length<2){$('chart').innerHTML='<div class="empty">'+(l.length?'Log one more weight to see your trend.':'No weight entries yet. Log your weight above.')+'</div>';} 
+  else{var mn=Math.min.apply(0,l.map(function(x){return x.w}))-1,mx=Math.max.apply(0,l.map(function(x){return x.w}))+1,W=300,H=120;
+    var pts=l.map(function(x,i){return (i/(l.length-1)*(W-20)+10).toFixed(1)+','+(H-10-(x.w-mn)/(mx-mn)*(H-20)).toFixed(1)}).join(' ');
+    $('chart').innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%" role="img" aria-label="Weight trend"><polyline points="'+pts+'" fill="none" stroke="var(--a)" stroke-width="2.5"/></svg><div class="muted">Latest: '+l[l.length-1].w+' kg · Start of range: '+l[0].w+' kg</div>'}
+  var out='';for(var i=6;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),c=0;items(k).forEach(function(x){c+=x.cal*x.qty});
+    out+='<div class="row"><span>'+d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})+'</span><span>'+(c?R(c)+' kcal':'<span class="muted">No entries</span>')+'</span></div>'}
+  $('week').innerHTML=out}
 
-          <div class="card panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">Add exercise</p>
-                <h3>Plan a session</h3>
-              </div>
-            </div>
-            <form id="exerciseForm" class="editor-form compact-form">
-              <div class="field-grid">
-                <label>
-                  Exercise name
-                  <input id="exerciseName" type="text" placeholder="Goblet squat" required />
-                </label>
-                <label>
-                  Sets
-                  <input id="exerciseSets" type="number" min="1" value="3" required />
-                </label>
-              </div>
-              <div class="field-grid">
-                <label>
-                  Reps
-                  <input id="exerciseReps" type="text" value="10-12" required />
-                </label>
-                <label>
-                  Rest (s)
-                  <input id="exerciseRest" type="number" min="0" value="45" required />
-                </label>
-              </div>
-              <div class="field-grid">
-                <label>
-                  Demo URL
-                  <input id="exerciseUrl" type="url" placeholder="https://example.com" />
-                </label>
-                <label>
-                  Notes
-                  <input id="exerciseNotes" type="text" placeholder="Focus on tempo" />
-                </label>
-              </div>
-              <button type="submit">Add exercise</button>
-            </form>
-          </div>
-
-          <div id="exerciseList" class="list-stack"></div>
-        </section>
-
-        <section id="goals" class="page">
-          <div class="page-header">
-            <div>
-              <p class="section-label">Goals</p>
-              <h2>Personal targets</h2>
-            </div>
-          </div>
-
-          <div class="card panel">
-            <form id="goalsForm" class="editor-form"></form>
-          </div>
-
-          <div class="card panel weight-panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">Weight</p>
-                <h3>Latest measurements</h3>
-              </div>
-            </div>
-            <form id="weightForm" class="inline-weight-form">
-              <label>
-                Current weight (kg)
-                <input id="weightInput" type="number" min="0" step="0.1" placeholder="72.5" required />
-              </label>
-              <button type="submit">Save</button>
-            </form>
-            <div id="weightList" class="list-stack compact-list"></div>
-          </div>
-        </section>
-
-        <section id="settings" class="page">
-          <div class="page-header">
-            <div>
-              <p class="section-label">Settings</p>
-              <h2>Data & AI</h2>
-            </div>
-          </div>
-
-          <div class="card panel settings-panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">Backup</p>
-                <h3>Import / export</h3>
-              </div>
-            </div>
-            <div class="settings-actions">
-              <button id="exportData" type="button">Export backup</button>
-              <label class="upload-button">
-                <input id="importData" type="file" accept="application/json" />
-                <span>Import backup</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="card panel settings-panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">AI food scan</p>
-                <h3>Photo analysis</h3>
-              </div>
-            </div>
-            <label class="upload-button wide">
-              <input id="foodPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
-              <span>Select meal photo</span>
-            </label>
-            <label class="goal-input">
-              <span>AI endpoint</span>
-              <input id="aiEndpoint" type="url" placeholder="https://example.com/api/food-scan" />
-            </label>
-            <button id="scanBtn" type="button" disabled>Analyze photo</button>
-            <div id="scanStatus" class="scan-status">Choose a meal photo to begin a scan.</div>
-            <img id="preview" class="scan-preview" hidden alt="Selected meal preview" />
-            <div id="scanResults" class="list-stack"></div>
-            <button id="manualFromScan" class="secondary" type="button">Manual entry</button>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <script src="./app.js"></script>
-  </body>
+fillT();planOut();renderToday();
+})();
+</script>
+</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
