@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#116b4a" />
     <meta
       name="description"
-      content="DailyFuel — Nutrition & Fitness tracker with meal logging and workout planning."
+      content="DailyFuel — Nutrition & Fitness tracker with meal logging, workout planning, weight tracking, AI nutrition insights, and PWA support."
     />
     <title>DailyFuel</title>
     <link rel="manifest" href="./manifest.webmanifest" />
@@ -20,112 +20,264 @@
           <p class="eyebrow">DailyFuel</p>
           <h1>Nutrition & Fitness</h1>
         </div>
-        <button id="resetData" class="ghost-button" type="button">Reset day</button>
+        <nav class="nav" aria-label="Primary navigation">
+          <button class="active" data-page="dashboard" type="button">Dashboard</button>
+          <button data-page="meals" type="button">Meals</button>
+          <button data-page="workouts" type="button">Workouts</button>
+          <button data-page="goals" type="button">Goals</button>
+          <button data-page="settings" type="button">Settings</button>
+        </nav>
       </header>
 
-      <main class="dashboard">
-        <section class="hero card">
-          <div>
-            <p class="section-label">Today</p>
-            <h2>Progress snapshot</h2>
-          </div>
-          <div class="summary" id="summaryChip">Goal ahead</div>
-        </section>
-
-        <section class="stats-grid" aria-label="Daily nutrition summary">
-          <article class="stat card">
-            <span class="stat-label">Calories</span>
-            <strong id="calorieTotal">0</strong>
-            <small id="calorieGoalLabel">/ 2200 kcal</small>
-          </article>
-          <article class="stat card">
-            <span class="stat-label">Protein</span>
-            <strong id="proteinTotal">0</strong>
-            <small>/ 150 g</small>
-          </article>
-          <article class="stat card">
-            <span class="stat-label">Hydration</span>
-            <strong id="waterTotal">0</strong>
-            <small>glasses</small>
-          </article>
-          <article class="stat card">
-            <span class="stat-label">Workouts</span>
-            <strong id="workoutCount">0</strong>
-            <small>/ 2 done</small>
-          </article>
-        </section>
-
-        <section class="panel-grid">
-          <article class="card panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">Meals</p>
-                <h3>Add food</h3>
-              </div>
+      <main>
+        <section id="dashboard" class="page active">
+          <div class="hero card">
+            <div>
+              <p class="section-label">Daily overview</p>
+              <h2>Progress snapshot</h2>
             </div>
+            <label class="date-picker">
+              <span>Date</span>
+              <input id="date" type="date" />
+            </label>
+          </div>
 
-            <form id="mealForm">
-              <label>
-                Food
-                <input id="mealName" name="mealName" type="text" placeholder="Greek yogurt bowl" required />
+          <section id="stats" class="stats-grid" aria-live="polite"></section>
+
+          <section class="panel-grid">
+            <article class="card panel small-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="section-label">Recent meals</p>
+                  <h3>Food log</h3>
+                </div>
+              </div>
+              <div id="recentMeals" class="list-stack"></div>
+            </article>
+
+            <article class="card panel small-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="section-label">Hydration</p>
+                  <h3>Water intake</h3>
+                </div>
+              </div>
+              <div class="water-summary">
+                <strong id="waterCount">0</strong>
+                <span>ml</span>
+              </div>
+              <div class="meter water-meter"><span id="waterBar" style="width: 0%"></span></div>
+              <div class="water-actions">
+                <button id="addWater" class="secondary" type="button">+ 250 ml</button>
+                <button id="undoWater" class="secondary" type="button">− 250 ml</button>
+              </div>
+              <label class="goal-input">
+                <span>Water goal (ml)</span>
+                <input id="waterGoal" type="number" min="250" step="250" value="2000" />
               </label>
-              <div class="inline-fields">
+            </article>
+          </section>
+        </section>
+
+        <section id="meals" class="page">
+          <div class="page-header">
+            <div>
+              <p class="section-label">Meals</p>
+              <h2>Daily nutrition diary</h2>
+            </div>
+            <button id="newMeal" type="button">Add meal</button>
+          </div>
+
+          <div id="mealEditor" class="card editor hidden" hidden>
+            <div class="editor-header">
+              <h3 id="mealEditorTitle">Add meal</h3>
+              <button id="cancelMeal" class="secondary" type="button">Close</button>
+            </div>
+            <form id="mealForm" class="editor-form">
+              <input id="mealId" type="hidden" />
+              <div class="field-grid">
+                <label>
+                  Food name
+                  <input id="foodName" type="text" placeholder="Greek yogurt bowl" required />
+                </label>
+                <label>
+                  Meal type
+                  <select id="mealType">
+                    <option>Breakfast</option>
+                    <option>Lunch</option>
+                    <option>Dinner</option>
+                    <option>Snack</option>
+                  </select>
+                </label>
+              </div>
+              <div class="field-grid">
+                <label>
+                  Serving (g)
+                  <input id="serving" type="number" min="0" step="1" value="100" />
+                </label>
                 <label>
                   Calories
-                  <input id="mealCalories" name="mealCalories" type="number" min="0" step="10" value="420" required />
+                  <input id="calories" type="number" min="0" step="1" value="0" required />
                 </label>
+              </div>
+              <div class="field-grid">
                 <label>
                   Protein (g)
-                  <input id="mealProtein" name="mealProtein" type="number" min="0" step="1" value="28" required />
+                  <input id="protein" type="number" min="0" step="1" value="0" required />
+                </label>
+                <label>
+                  Carbs (g)
+                  <input id="carbs" type="number" min="0" step="1" value="0" required />
                 </label>
               </div>
-              <button type="submit">Add meal</button>
-            </form>
-
-            <ul id="mealList" class="item-list" aria-live="polite"></ul>
-          </article>
-
-          <article class="card panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">AI scan</p>
-                <h3>Food recognition</h3>
+              <div class="field-grid">
+                <label>
+                  Fat (g)
+                  <input id="fat" type="number" min="0" step="1" value="0" required />
+                </label>
+                <label>
+                  Fiber (g)
+                  <input id="fiber" type="number" min="0" step="1" value="0" required />
+                </label>
               </div>
-            </div>
+              <div class="editor-actions">
+                <button type="submit">Save meal</button>
+              </div>
+            </form>
+          </div>
 
-            <label class="upload-box" for="foodImage">
-              <input id="foodImage" type="file" accept="image/*" />
-              <span>Upload a meal photo</span>
-            </label>
-            <button id="scanMeal" class="secondary" type="button">Scan meal</button>
-            <div id="scanResult" class="scan-result">No image uploaded yet.</div>
-            <div id="scanPreview" class="scan-preview" aria-live="polite"></div>
-          </article>
+          <div id="mealList" class="list-stack"></div>
         </section>
 
-        <section class="panel-grid lower-grid">
-          <article class="card panel">
-            <div class="panel-header">
-              <div>
-                <p class="section-label">Workout</p>
-                <h3>Training plan</h3>
-              </div>
+        <section id="workouts" class="page">
+          <div class="page-header">
+            <div>
+              <p class="section-label">Workouts</p>
+              <h2>Training plan</h2>
             </div>
-            <ul id="workoutList" class="item-list workout-list" aria-live="polite"></ul>
-          </article>
+            <select id="workoutDay" aria-label="Workout day"></select>
+          </div>
 
-          <article class="card panel">
+          <div class="card panel">
             <div class="panel-header">
               <div>
-                <p class="section-label">Hydration</p>
-                <h3>Water intake</h3>
+                <p class="section-label">Add exercise</p>
+                <h3>Plan a session</h3>
               </div>
             </div>
-            <div class="water-box">
-              <button id="waterAdd" class="secondary" type="button">+ 1 glass</button>
-              <p id="waterStatus">Goal: 8 glasses</p>
+            <form id="exerciseForm" class="editor-form compact-form">
+              <div class="field-grid">
+                <label>
+                  Exercise name
+                  <input id="exerciseName" type="text" placeholder="Goblet squat" required />
+                </label>
+                <label>
+                  Sets
+                  <input id="exerciseSets" type="number" min="1" value="3" required />
+                </label>
+              </div>
+              <div class="field-grid">
+                <label>
+                  Reps
+                  <input id="exerciseReps" type="text" value="10-12" required />
+                </label>
+                <label>
+                  Rest (s)
+                  <input id="exerciseRest" type="number" min="0" value="45" required />
+                </label>
+              </div>
+              <div class="field-grid">
+                <label>
+                  Demo URL
+                  <input id="exerciseUrl" type="url" placeholder="https://example.com" />
+                </label>
+                <label>
+                  Notes
+                  <input id="exerciseNotes" type="text" placeholder="Focus on tempo" />
+                </label>
+              </div>
+              <button type="submit">Add exercise</button>
+            </form>
+          </div>
+
+          <div id="exerciseList" class="list-stack"></div>
+        </section>
+
+        <section id="goals" class="page">
+          <div class="page-header">
+            <div>
+              <p class="section-label">Goals</p>
+              <h2>Personal targets</h2>
             </div>
-          </article>
+          </div>
+
+          <div class="card panel">
+            <form id="goalsForm" class="editor-form"></form>
+          </div>
+
+          <div class="card panel weight-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Weight</p>
+                <h3>Latest measurements</h3>
+              </div>
+            </div>
+            <form id="weightForm" class="inline-weight-form">
+              <label>
+                Current weight (kg)
+                <input id="weightInput" type="number" min="0" step="0.1" placeholder="72.5" required />
+              </label>
+              <button type="submit">Save</button>
+            </form>
+            <div id="weightList" class="list-stack compact-list"></div>
+          </div>
+        </section>
+
+        <section id="settings" class="page">
+          <div class="page-header">
+            <div>
+              <p class="section-label">Settings</p>
+              <h2>Data & AI</h2>
+            </div>
+          </div>
+
+          <div class="card panel settings-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Backup</p>
+                <h3>Import / export</h3>
+              </div>
+            </div>
+            <div class="settings-actions">
+              <button id="exportData" type="button">Export backup</button>
+              <label class="upload-button">
+                <input id="importData" type="file" accept="application/json" />
+                <span>Import backup</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card panel settings-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">AI food scan</p>
+                <h3>Photo analysis</h3>
+              </div>
+            </div>
+            <label class="upload-button wide">
+              <input id="foodPhoto" type="file" accept="image/jpeg,image/png,image/webp" />
+              <span>Select meal photo</span>
+            </label>
+            <label class="goal-input">
+              <span>AI endpoint</span>
+              <input id="aiEndpoint" type="url" placeholder="https://example.com/api/food-scan" />
+            </label>
+            <button id="scanBtn" type="button" disabled>Analyze photo</button>
+            <div id="scanStatus" class="scan-status">Choose a meal photo to begin a scan.</div>
+            <img id="preview" class="scan-preview" hidden alt="Selected meal preview" />
+            <div id="scanResults" class="list-stack"></div>
+            <button id="manualFromScan" class="secondary" type="button">Manual entry</button>
+          </div>
         </section>
       </main>
     </div>
@@ -133,3 +285,104 @@
     <script src="./app.js"></script>
   </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
